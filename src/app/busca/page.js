@@ -1,10 +1,14 @@
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import SearchBar from '@/components/SearchBar';
 
 async function searchVerses(query) {
   if (!query || query.trim().length === 0) return [];
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const h = await headers();
+    const host = h.get('host') || 'localhost:3000';
+    const protocol = host === 'localhost:3000' ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
     const res = await fetch(`${baseUrl}/api/busca?q=${encodeURIComponent(query.trim())}`, {
       next: { revalidate: 60 },
     });

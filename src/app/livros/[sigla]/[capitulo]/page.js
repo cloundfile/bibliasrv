@@ -1,10 +1,14 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { headers } from 'next/headers';
 import BookViewer from '@/components/BookViewer';
 
 async function getChapter(sigla, capitulo) {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const headersList = await headers();
+    const host = headersList.get('host') || 'localhost:3000';
+    const protocol = host === 'localhost:3000' ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
     const res = await fetch(`${baseUrl}/api/livros/${sigla}/${capitulo}`, { next: { revalidate: 3600 } });
     if (res.status === 404) return null;
     if (!res.ok) throw new Error('Failed to fetch chapter');

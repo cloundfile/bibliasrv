@@ -1,8 +1,16 @@
 import Link from 'next/link';
+import { headers } from 'next/headers';
+
+async function getBaseUrl() {
+  const h = await headers();
+  const host = h.get('host') || 'localhost:3000';
+  const protocol = host === 'localhost:3000' ? 'http' : 'https';
+  return `${protocol}://${host}`;
+}
 
 async function getVerseOfDay() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = await getBaseUrl();
     const res = await fetch(`${baseUrl}/api/versiculo-do-dia`, { cache: 'no-store' });
     if (!res.ok) return null;
     const json = await res.json();
@@ -14,7 +22,7 @@ async function getVerseOfDay() {
 
 async function getStats() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = await getBaseUrl();
     const res = await fetch(`${baseUrl}/api/status`, { cache: 'no-store' });
     if (!res.ok) return null;
     const json = await res.json();
