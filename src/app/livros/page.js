@@ -1,17 +1,10 @@
 import Link from 'next/link';
-import { headers } from 'next/headers';
 import BookCard from '@/components/BookCard';
+import livrosService from '@/services/livrosService';
 
 async function getBooks() {
   try {
-    const h = await headers();
-    const host = h.get('host') || 'localhost:3000';
-    const protocol = host === 'localhost:3000' ? 'http' : 'https';
-    const baseUrl = `${protocol}://${host}`;
-    const res = await fetch(`${baseUrl}/api/livros`, { next: { revalidate: 3600 } });
-    if (!res.ok) throw new Error('Failed to fetch books');
-    const json = await res.json();
-    return json.success ? json.data : [];
+    return await livrosService.listarTodos();
   } catch {
     return [];
   }

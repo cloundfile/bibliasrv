@@ -1,18 +1,10 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { headers } from 'next/headers';
+import capitulosService from '@/services/capitulosService';
 
 async function getBook(sigla) {
   try {
-    const h = await headers();
-    const host = h.get('host') || 'localhost:3000';
-    const protocol = host === 'localhost:3000' ? 'http' : 'https';
-    const baseUrl = `${protocol}://${host}`;
-    const res = await fetch(`${baseUrl}/api/livros/${sigla}`, { next: { revalidate: 3600 } });
-    if (res.status === 404) return null;
-    if (!res.ok) throw new Error('Failed to fetch book');
-    const json = await res.json();
-    return json.success ? json.data : null;
+    return await capitulosService.listarPorSigla(sigla);
   } catch {
     return null;
   }

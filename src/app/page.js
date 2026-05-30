@@ -1,20 +1,9 @@
 import Link from 'next/link';
-import { headers } from 'next/headers';
-
-async function getBaseUrl() {
-  const h = await headers();
-  const host = h.get('host') || 'localhost:3000';
-  const protocol = host === 'localhost:3000' ? 'http' : 'https';
-  return `${protocol}://${host}`;
-}
+import versiculosService from '@/services/versiculosService';
 
 async function getVerseOfDay() {
   try {
-    const baseUrl = await getBaseUrl();
-    const res = await fetch(`${baseUrl}/api/versiculo-do-dia`, { cache: 'no-store' });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.success ? json.data : null;
+    return await versiculosService.versiculoDoDia();
   } catch {
     return null;
   }
@@ -22,11 +11,7 @@ async function getVerseOfDay() {
 
 async function getStats() {
   try {
-    const baseUrl = await getBaseUrl();
-    const res = await fetch(`${baseUrl}/api/status`, { cache: 'no-store' });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.success ? json.data : null;
+    return await versiculosService.stats();
   } catch {
     return null;
   }

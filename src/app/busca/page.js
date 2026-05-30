@@ -1,20 +1,11 @@
 import Link from 'next/link';
-import { headers } from 'next/headers';
 import SearchBar from '@/components/SearchBar';
+import versiculosService from '@/services/versiculosService';
 
 async function searchVerses(query) {
   if (!query || query.trim().length === 0) return [];
   try {
-    const h = await headers();
-    const host = h.get('host') || 'localhost:3000';
-    const protocol = host === 'localhost:3000' ? 'http' : 'https';
-    const baseUrl = `${protocol}://${host}`;
-    const res = await fetch(`${baseUrl}/api/busca?q=${encodeURIComponent(query.trim())}`, {
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) return [];
-    const json = await res.json();
-    return json.success ? json.data : [];
+    return await versiculosService.buscar(query.trim());
   } catch {
     return [];
   }
